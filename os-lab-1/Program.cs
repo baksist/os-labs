@@ -10,6 +10,7 @@ namespace os_lab_1
             {
                 PrintOptions();
                 Int32.TryParse(Console.ReadLine(), out var choice);
+                Console.Clear();
                 switch (choice)
                 {
                     case 1:
