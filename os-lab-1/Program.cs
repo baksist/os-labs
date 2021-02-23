@@ -32,6 +32,7 @@ namespace os_lab_1
                         Environment.Exit(0);
                         break;
                     default:
+                        Console.WriteLine("Unknown option");
                         break;
                 }
                 Console.WriteLine("Press any key to continue...");
@@ -47,7 +48,7 @@ namespace os_lab_1
             Console.WriteLine("3. JSON");
             Console.WriteLine("4. XML");
             Console.WriteLine("5. Zip archives");
-            Console.WriteLine("Choose task (1-5) or quit(0):");
+            Console.Write("Choose task (1-5) or quit(0): ");
         }
     }
 }

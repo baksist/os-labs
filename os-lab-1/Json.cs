@@ -22,6 +22,7 @@ namespace os_lab_1
             var jsonString = JsonSerializer.Serialize(genData, new JsonSerializerOptions(){WriteIndented = true});
             Console.WriteLine("Original JSON:");
             Console.WriteLine(jsonString);
+            Console.WriteLine();
             
             var writer = new StreamWriter(path);
             writer.WriteLine(jsonString);
