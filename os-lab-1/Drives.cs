@@ -11,6 +11,7 @@ namespace os_lab_1
         {
             var drives = DriveInfo.GetDrives();
 
+            Console.WriteLine($"{drives.Length} drives detected\n");
             foreach(var drive in drives)
             {
                 if (drive.IsReady)
