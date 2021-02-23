@@ -9,21 +9,21 @@ namespace os_lab_1
     {
         public static void Execute()
         {
-            Console.WriteLine("Enter file name: ");
-            var filename = Console.ReadLine();
-            filename = Directory.GetCurrentDirectory() + $"\\{filename}";
-
-            var writer = new StreamWriter(filename);
-            Console.WriteLine("Enter any string: ");
+            var path = Directory.GetCurrentDirectory() + "\\test-file.txt";
+            
+            var writer = new StreamWriter(path);
+            Console.WriteLine("Enter a string to be written to file: ");
             var content = Console.ReadLine();
             writer.WriteLine(content);
             writer.Close();
 
-            var reader = new StreamReader(filename);
-            Console.WriteLine($"Your string: {reader.ReadToEnd()}");
+            var reader = new StreamReader(path);
+            Console.WriteLine($"File opened: {path}");
+            Console.Write($"Contents: {reader.ReadToEnd()}");
             reader.Close();
 
-            File.Delete(filename);
+            File.Delete(path);
+            Console.WriteLine("File deleted");
         }
     }
 }
