@@ -9,8 +9,18 @@ namespace os_lab_1
             while (true)
             {
                 PrintOptions();
-                Int32.TryParse(Console.ReadLine(), out var choice);
+
+                int choice;
+                try
+                {
+                    choice = Convert.ToInt32(Console.ReadLine());
+                }
+                catch (Exception e)
+                {
+                    choice = -1;
+                }
                 Console.Clear();
+                
                 switch (choice)
                 {
                     case 1:
@@ -32,7 +42,7 @@ namespace os_lab_1
                         Environment.Exit(0);
                         break;
                     default:
-                        Console.WriteLine("Unknown option");
+                        Console.WriteLine("Unknown or invalid option");
                         break;
                 }
                 Console.WriteLine("Press any key to continue...");
