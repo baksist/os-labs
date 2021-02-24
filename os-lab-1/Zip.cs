@@ -8,19 +8,26 @@ namespace os_lab_1
 {
     static class Zip
     {
+        private const string Source = "src-file.txt";
+        private const string Archive = "src-file.zip";
+        private const string Unzipped = "new-file-unzip.txt";
+        private const int GenFileSize = 500; // bytes
         public static void Execute()
         {
-            var FilePath = Directory.GetCurrentDirectory() + "\\new-file.txt";
-            var ArchivePath = Directory.GetCurrentDirectory() + "\\new-file.zip";
-            var DecompPath = FilePath.Replace("new-file.txt", "new-file-dcmp.txt");
-            Compress(FilePath, ArchivePath);
+            GenerateFile(GenFileSize);
+            
+            Compress(Source, Archive);
+            Decompress(Archive, Unzipped);
 
-            Decompress(ArchivePath, DecompPath);
-
-            Console.WriteLine($"Source file size: {new FileInfo(FilePath).Length}\n Archive size: {new FileInfo(ArchivePath).Length}\n Decompressed file size: {new FileInfo(DecompPath).Length}");
-
-            File.Delete(ArchivePath);
-            File.Delete(DecompPath);
+            Console.WriteLine($"Source file size: {new FileInfo(Source).Length}\n" +
+                              $"Archive size: {new FileInfo(Archive).Length}\n" +
+                              $"Decompressed file size: {new FileInfo(Unzipped).Length}\n");
+            
+            File.Delete(Source);
+            File.Delete(Archive);
+            File.Delete(Unzipped);
+            
+            Console.WriteLine("Files deleted.");
         }
         
         private static void Compress(string sourcePath, string targetPath)
@@ -49,6 +56,12 @@ namespace os_lab_1
                     }
                 }
             }
+        }
+        private static void GenerateFile(int size)
+        {
+            var writer = new StreamWriter(Source);
+            writer.Write(new string('E', size));
+            writer.Close();
         }
     }
 }
