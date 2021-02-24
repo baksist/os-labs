@@ -7,10 +7,9 @@ namespace os_lab_1
 {
     static class Json
     {
+        private const string Path = "data.json";
         public static void Execute()
         {
-            var path = Directory.GetCurrentDirectory() + "\\data.json";
-
             var genData = new DataExample()
             {
                 DataString = "test string",
@@ -23,11 +22,11 @@ namespace os_lab_1
             Console.WriteLine(jsonString);
             Console.WriteLine();
             
-            var writer = new StreamWriter(path);
+            var writer = new StreamWriter(Path);
             writer.WriteLine(jsonString);
             writer.Close();
 
-            var reader = new StreamReader(path);
+            var reader = new StreamReader(Path);
             var data = JsonSerializer.Deserialize<DataExample>(reader.ReadToEnd());
             reader.Close();
 
@@ -36,16 +35,16 @@ namespace os_lab_1
             data.DataBool = false;
             data.DataIntList.Add(123);
             
-            writer = new StreamWriter(path);
+            writer = new StreamWriter(Path);
             writer.WriteLine(JsonSerializer.Serialize(data, new JsonSerializerOptions(){WriteIndented = true}));
             writer.Close();
 
-            reader = new StreamReader(path);
+            reader = new StreamReader(Path);
             Console.WriteLine("Edited JSON:");
             Console.WriteLine(reader.ReadToEnd());
             reader.Close();
 
-            File.Delete(path);
+            File.Delete(Path);
         }
     }
 

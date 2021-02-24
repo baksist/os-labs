@@ -5,22 +5,21 @@ namespace os_lab_1
 {
     static class Files
     {
+        private const string Path = "test-file.txt";
         public static void Execute()
         {
-            var path = Directory.GetCurrentDirectory() + "\\test-file.txt";
-            
-            var writer = new StreamWriter(path);
+            var writer = new StreamWriter(Path);
             Console.WriteLine("Enter a string to be written to file: ");
             var content = Console.ReadLine();
             writer.WriteLine(content);
             writer.Close();
 
-            var reader = new StreamReader(path);
-            Console.WriteLine($"File opened: {path}");
+            var reader = new StreamReader(Path);
+            Console.WriteLine($"File opened: {Path}");
             Console.Write($"Contents: {reader.ReadToEnd()}");
             reader.Close();
 
-            File.Delete(path);
+            File.Delete(Path);
             Console.WriteLine("File deleted");
         }
     }
