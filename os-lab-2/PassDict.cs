@@ -8,7 +8,7 @@ namespace os_lab_2
     public static class PassDict
     {
         private static readonly string alphabet = "abcdefghijklmnopqrstuvwxyz";
-        private static readonly string path = "../../../passdict.txt";
+        public static readonly string path = "../../../passdict.txt";
         
         public static void GenerateDictionary(int length)
         {

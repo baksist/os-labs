@@ -37,6 +37,15 @@ namespace os_lab_2
                     Console.WriteLine("Unknown option");
                     break;
             }
+
+            foreach (var hash in hashes)
+            {
+                string pass = HashBruteforcer.BruteForceSingle(hash);
+                if (pass != null)
+                    Console.WriteLine(pass);
+                else
+                    Console.WriteLine("Password not found");
+            }
             
         }
 

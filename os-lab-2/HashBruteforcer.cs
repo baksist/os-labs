@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿using System.IO;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace os_lab_2
@@ -21,6 +22,24 @@ namespace os_lab_2
                 builder.Append(hash[i].ToString("x2"));  
             }  
             return builder.ToString();  
+        }
+
+        public static string BruteForceSingle(string hash)
+        {
+            if (!File.Exists(PassDict.path))
+                PassDict.GenerateDictionary(pass_length);
+            var reader = new StreamReader(PassDict.path);
+            while (!reader.EndOfStream)
+            {
+                var pass = reader.ReadLine();
+                if (CheckHash(pass, hash))
+                {
+                    reader.Close();
+                    return pass;
+                }
+            }
+            reader.Close();
+            return null;
         }
     }
 }
