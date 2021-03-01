@@ -6,7 +6,6 @@ namespace os_lab_2
 {
     class Program
     {
-        private static readonly string alphabet = "abcdefghijklmnopqrstuvwxyz";
         private static string hashes_file = "../../../hashes.txt";
         
         static void Main(string[] args)
@@ -38,7 +37,7 @@ namespace os_lab_2
                     Console.WriteLine("Unknown option");
                     break;
             }
-
+            
         }
 
         private static List<string> ReadHashesFile()
@@ -46,9 +45,7 @@ namespace os_lab_2
             var reader = new StreamReader(hashes_file);
             var hashes = new List<string>();
             while (!reader.EndOfStream)
-            {
                 hashes.Add(reader.ReadLine());
-            }
             reader.Close();
             return hashes;
         }
@@ -61,13 +58,9 @@ namespace os_lab_2
             {
                 var hash = Console.ReadLine();
                 if (hash != "0")
-                {
                     hashes.Add(hash);
-                }
                 else
-                {
                     break;
-                }
             }
             return hashes;
         }
