@@ -70,14 +70,10 @@ namespace os_lab_2
             for (var i = 0; i < threadAmount; i++)
             {
                 var seg = dict.GetRange(passPositions[i].Item1,passPositions[i].Item2);
-                tasks.Add(new Task<string>(() => BruteforceTask(seg, hash)));
+                var task = Task<string>.Run(() => BruteforceTask(seg, hash));
+                tasks.Add(task);
             }
-
-            foreach (var task in tasks)
-            {
-                task.Start();
-            }
-
+            
             while (tasks.Any())
             {
                 Task<string> finishedTask = await Task.WhenAny(tasks);
@@ -85,14 +81,6 @@ namespace os_lab_2
                     return finishedTask.Result;
                 tasks.Remove(finishedTask);
             }
-
-            /*foreach (var line in File.ReadLines(PassDict.path).AsParallel().WithDegreeOfParallelism(threadAmount))
-            {
-                Console.WriteLine(line);
-                if (CheckHash(line, hash))
-                    return line;
-            }*/
-            
             return null;
         }
 
