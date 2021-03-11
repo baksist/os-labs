@@ -1,6 +1,13 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace os_lab_2
 {
@@ -40,6 +47,67 @@ namespace os_lab_2
             }
             reader.Close();
             return null;
+        }
+
+        public static async Task<string> BruteForceMulti(string hash, int threadAmount)
+        {
+            if (!File.Exists(PassDict.path))
+                PassDict.GenerateDictionary(pass_length);
+            var dict = File.ReadLines(PassDict.path).ToList();
+            
+            var passPositions = new List<Tuple<int, int>>();
+            var curStart = 0;
+            var defaultInterval = dict.Count / threadAmount;
+            for (var i = 0; i < threadAmount - 1; i++)
+            {
+                passPositions.Add(new Tuple<int, int>(curStart, defaultInterval));
+                curStart += defaultInterval;
+            }
+            passPositions.Add(new Tuple<int, int>(curStart, defaultInterval + 
+                dict.Count % defaultInterval - 1));
+
+            var tasks = new List<Task<string>>();
+            for (var i = 0; i < threadAmount; i++)
+            {
+                var seg = dict.GetRange(passPositions[i].Item1,passPositions[i].Item2);
+                tasks.Add(new Task<string>(() => BruteforceTask(seg, hash)));
+            }
+
+            foreach (var task in tasks)
+            {
+                task.Start();
+            }
+
+            while (tasks.Any())
+            {
+                Task<string> finishedTask = await Task.WhenAny(tasks);
+                if (finishedTask.Result != null)
+                    return finishedTask.Result;
+                tasks.Remove(finishedTask);
+            }
+
+            /*foreach (var line in File.ReadLines(PassDict.path).AsParallel().WithDegreeOfParallelism(threadAmount))
+            {
+                Console.WriteLine(line);
+                if (CheckHash(line, hash))
+                    return line;
+            }*/
+            
+            return null;
+        }
+
+        private static string BruteforceTask(List<string> segment, string hash)
+        {
+            string result = null;
+            foreach (var pass in segment)
+            {
+                if (CheckHash(pass, hash))
+                {
+                    result = pass;
+                    break;
+                }            
+            }
+            return result;
         }
     }
 }

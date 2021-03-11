@@ -7,6 +7,7 @@ namespace os_lab_2
     class Program
     {
         private static string hashes_file = "../../../hashes.txt";
+        private static int threads = 8;
         
         static void Main(string[] args)
         {
@@ -14,16 +15,8 @@ namespace os_lab_2
             Console.WriteLine("1. Read hashes from file");
             Console.WriteLine("2. Read hashes from console");
             
-            int choice;
-            try
-            {
-                choice = Convert.ToInt32(Console.ReadLine());
-            }
-            catch (Exception e)
-            {
-                choice = 0;
-            }
-
+            var choice = Convert.ToInt32(Console.ReadLine());
+           
             List<string> hashes = new List<string>();
             switch (choice)
             {
@@ -37,12 +30,30 @@ namespace os_lab_2
                     Console.WriteLine("Unknown option");
                     break;
             }
+            
+            Console.Write("Choose single-(1) or multithreading(2) mode: ");
+            
+            var mode = Convert.ToInt32(Console.ReadLine());
+            
+            if (mode == 2)
+            {
+                Console.Write("Enter number of threads: ");
+                threads = Convert.ToInt32(Console.ReadLine());
+            }
 
             foreach (var hash in hashes)
             {
-                string pass = HashBruteforcer.BruteForceSingle(hash);
+                var watch = System.Diagnostics.Stopwatch.StartNew();
+                string pass = mode switch
+                {
+                    1 => HashBruteforcer.BruteForceSingle(hash),
+                    2 => HashBruteforcer.BruteForceMulti(hash, threads).Result,
+                    _ => null,
+                };
+                watch.Stop();
+
                 if (pass != null)
-                    Console.WriteLine(pass);
+                    Console.WriteLine($"{pass}: {watch.Elapsed.Seconds}s spent cracking");
                 else
                     Console.WriteLine("Password not found");
             }
@@ -61,7 +72,7 @@ namespace os_lab_2
 
         private static List<string> ReadHashesConsole()
         {
-            Console.Write("Enter your hashes line-by-line; Enter 0 to stop");
+            Console.WriteLine("Enter your hashes line-by-line; Enter 0 to stop");
             var hashes = new List<string>();
             while (true)
             {
