@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 
 namespace os_lab_2
 {
     class Program
     {
-        private static string hashes_file = "../../../hashes.txt";
-        private static int threads = 8;
+        public const string Alphabet = "abcdefghijklmnopqrstuvwxyz";
+        public const int PasswordLength = 5;
+        private const string HashesFile = "../../../hashes.txt";
+        public const string DictPath = "../../../passdict.txt";
+        private static int threads = Environment.ProcessorCount;
         
         static void Main(string[] args)
         {
@@ -33,21 +37,25 @@ namespace os_lab_2
             
             Console.Write("Choose single-(1) or multithreading(2) mode: ");
             
-            var mode = Convert.ToInt32(Console.ReadLine());
+            var mode = Console.ReadLine();
             
-            if (mode == 2)
+            if (mode == "2")
             {
-                Console.Write("Enter number of threads: ");
-                threads = Convert.ToInt32(Console.ReadLine());
+                Console.Write($"Enter number of threads or press 'Enter' to use default value({threads}): ");
+                var input = Console.ReadLine();
+                if (!String.IsNullOrEmpty(input))
+                    threads = Convert.ToInt32(input);
             }
+            
+            PassDict.GenerateDictionary();
 
             foreach (var hash in hashes)
             {
-                var watch = System.Diagnostics.Stopwatch.StartNew();
+                var watch = Stopwatch.StartNew();
                 string pass = mode switch
                 {
-                    1 => HashBruteforcer.BruteForceSingle(hash),
-                    2 => HashBruteforcer.BruteForceMulti(hash, threads).Result,
+                    "1" => HashBruteforcer.BruteForceSingle(hash),
+                    "2" => HashBruteforcer.BruteForceMulti(hash, threads).Result,
                     _ => null,
                 };
                 watch.Stop();
@@ -62,7 +70,7 @@ namespace os_lab_2
 
         private static List<string> ReadHashesFile()
         {
-            var reader = new StreamReader(hashes_file);
+            var reader = new StreamReader(HashesFile);
             var hashes = new List<string>();
             while (!reader.EndOfStream)
                 hashes.Add(reader.ReadLine());

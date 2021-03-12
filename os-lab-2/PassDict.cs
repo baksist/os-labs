@@ -7,18 +7,20 @@ namespace os_lab_2
 {
     public static class PassDict
     {
-        private static readonly string alphabet = "abcdefghijklmnopqrstuvwxyz";
-        public static readonly string path = "../../../passdict.txt";
-        
-        public static void GenerateDictionary(int length)
+        public static void GenerateDictionary()
         {
-            var writer = new StreamWriter(path);
-            var passwords = GetPermutationsWithRept(alphabet, length);
-            foreach (var pass in passwords)
+            if (!File.Exists(Program.DictPath))
             {
-                writer.WriteLine(String.Concat(pass));
+                Console.WriteLine("Password dictionary not found, generating...");
+                var writer = new StreamWriter(Program.DictPath);
+                var passwords = GetPermutationsWithRept(Program.Alphabet, Program.PasswordLength);
+                foreach (var pass in passwords)
+                    writer.WriteLine(String.Concat(pass));
+                writer.Close();
+                Console.WriteLine("Password dictionary successfully generated");
             }
-            writer.Close();
+            else
+                Console.WriteLine("Password dictionary found, proceeding...");
         }
         
         private static IEnumerable<IEnumerable<T>> 

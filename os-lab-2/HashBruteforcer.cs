@@ -1,41 +1,33 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace os_lab_2
 {
     public static class HashBruteforcer
     {
-        private static readonly int pass_length = 5;
-        public static bool CheckHash(string password, string hash)
+        private static bool CheckHash(string password, string hash)
         {
-            var mySHA256 = SHA256.Create();
-            var testHash = mySHA256.ComputeHash(Encoding.ASCII.GetBytes(password));
+            var crypto = SHA256.Create();
+            var testHash = crypto.ComputeHash(Encoding.ASCII.GetBytes(password));
             return HashToString(testHash) == hash;
         }
 
         private static string HashToString(byte[] hash)
         {
-            StringBuilder builder = new StringBuilder();  
-            for (int i = 0; i < hash.Length; i++)  
-            {  
-                builder.Append(hash[i].ToString("x2"));  
-            }  
+            var builder = new StringBuilder();  
+            foreach (var hashByte in hash)
+                builder.Append(hashByte.ToString("x2"));  
             return builder.ToString();  
         }
 
         public static string BruteForceSingle(string hash)
         {
-            if (!File.Exists(PassDict.path))
-                PassDict.GenerateDictionary(pass_length);
-            var reader = new StreamReader(PassDict.path);
+            var reader = new StreamReader(Program.DictPath);
             while (!reader.EndOfStream)
             {
                 var pass = reader.ReadLine();
@@ -51,9 +43,7 @@ namespace os_lab_2
 
         public static async Task<string> BruteForceMulti(string hash, int threadAmount)
         {
-            if (!File.Exists(PassDict.path))
-                PassDict.GenerateDictionary(pass_length);
-            var dict = File.ReadLines(PassDict.path).ToList();
+            var dict = File.ReadLines(Program.DictPath).ToList();
             
             var passPositions = new List<Tuple<int, int>>();
             var curStart = 0;
@@ -63,9 +53,8 @@ namespace os_lab_2
                 passPositions.Add(new Tuple<int, int>(curStart, defaultInterval));
                 curStart += defaultInterval;
             }
-            passPositions.Add(new Tuple<int, int>(curStart, defaultInterval + 
-                dict.Count % defaultInterval - 1));
-
+            passPositions.Add(new Tuple<int, int>(curStart, dict.Count - curStart));
+            
             var tasks = new List<Task<string>>();
             for (var i = 0; i < threadAmount; i++)
             {
