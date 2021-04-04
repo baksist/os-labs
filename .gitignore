@@ -2,3 +2,8 @@
 **/bin
 **/obj
 **/.idea
+os-lab-4/**/.idea
+os-lab-4/cpp/cmake-build-debug
+os-lab-4/cpp/CMakeLists.txt
+os-lab-4/**/*.exe
+os-lab-4/**/*.obj
