@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 
-namespace os_lab_5
+namespace os_lab_4
 {
     class Program
     {
@@ -23,7 +22,6 @@ namespace os_lab_5
             {
                 Console.WriteLine(e);
                 throw;
-            }
-        }
+            }        }
     }
 }

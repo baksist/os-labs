@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace os_lab_5
+namespace os_lab_4
 {
     public class ProcessInfo
     {
