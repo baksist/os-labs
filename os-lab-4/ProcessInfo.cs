@@ -4,19 +4,24 @@ namespace os_lab_4
 {
     public class ProcessInfo
     {
-        public Process _process;
-        private int quant;
-        public bool IsReady { get; set; }
-        public bool IsRunning { get; set; }
-        public bool IsIdle { get; set; }
+        private const string ModulePath = "C:\\Windows\\system32\\mspaint.exe";
+       
+        public int Quant;
+        public int Priority;
 
-        public ProcessInfo(string path)
+        public Process _process;
+        public bool IsReady;
+        public bool IsRunning;
+        public bool IsIdle;
+
+        public ProcessInfo()
         {
-            _process = new Process{StartInfo = new ProcessStartInfo(path)};
+            _process = new Process{StartInfo = new ProcessStartInfo(ModulePath)};
             IsReady = true;
             IsRunning = false;
             IsIdle = false;
-            _process.Start();
+            //_process.Start();
         }
+        
     }
 }

@@ -1,27 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace os_lab_4
+﻿namespace os_lab_4
 {
+    // TODO: define when the process is "ready"
     class Program
     {
-        private const string ModulePath = "C:\\Windows\\system32\\mspaint.exe";
-        private const int ProcessNumber = 5;
-        
         static void Main(string[] args)
         {
-            var ProcList = new List<ProcessInfo>();
-            try
+            Scheduler.Initialize();
+            while (true)
             {
-                for (var i = 0; i < ProcessNumber; i++)
-                {
-                    ProcList.Add(new ProcessInfo(ModulePath));
-                }
+                Scheduler.Run();
+                if (Scheduler.ProcessQueue.Count == 0)
+                    return;
             }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }        }
+        }
     }
 }
