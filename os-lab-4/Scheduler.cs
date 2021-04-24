@@ -1,18 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Threading;
 
 namespace os_lab_4
 {
-    // TODO: suspend/resume process, catch interruptions and priority change signals
     public static class Scheduler
     {
-        private const int ProcessNumber = 2;
-        public static Queue<ProcessInfo> ProcessQueue;
+        private const int ProcessNumber = 5;
         private const int BASE_QUANTUM = 1000;
-        //private static ProcessInfo suspendedProcess = null;
-
+        private const ConsoleKey defaultKey = ConsoleKey.A;
+        
+        private static Queue<ProcessInfo> ProcessQueue;
+        private static ConsoleKey key = defaultKey;
+        
+        public static int ProcessCount() => ProcessQueue.Count;
+        
         public static void Initialize()
         {
             try
@@ -44,50 +46,44 @@ namespace os_lab_4
             var sw = new Stopwatch();
             sw.Start();
             process.Resume();
-            while (sw.Elapsed.TotalMilliseconds < process.Quantum)
-                WaitForInterruption();
+            while (sw.Elapsed.TotalMilliseconds < process.Quantum) {}
             sw.Stop();
             process.Suspend();
+            
+            if (key == ConsoleKey.UpArrow)
+                RaisePriority(ref process);
+            else if (key == ConsoleKey.DownArrow)
+                LowerPriority(ref process);
+            key = defaultKey;
+            
             ProcessQueue.Enqueue(process);
         }
-
-        public static void RaisePriority(int i)
+        
+        public static void MonitorKeys()
         {
-            if (i == 1)
+            while (true)
             {
-                Console.WriteLine("process has the highest priority already :(");
-                return;
+                while (!Console.KeyAvailable)
+                {
+                    if (ProcessQueue.Count == 0)
+                        return;
+                }
+                key = Console.ReadKey(true).Key;
             }
-
-            ref var proc = ref ProcessQueue.ToArray()[i - 1];
-            proc.Priority++;
-            proc.Quantum = BASE_QUANTUM * proc.Priority;
-
-            proc = ref ProcessQueue.ToArray()[i - 2];
-            proc.Priority--;
-            proc.Quantum = BASE_QUANTUM * proc.Priority;
         }
-
-        public static void LowerPriority(int i)
+        
+        private static void RaisePriority(ref ProcessInfo process)
         {
-            if (i == ProcessNumber)
-            {
-                Console.WriteLine("process has the lowest priority already :(");
+            process.Priority++;
+            process.Quantum = BASE_QUANTUM * process.Priority;
+        }
+        
+        private static void LowerPriority(ref ProcessInfo process)
+        {
+            if (process.Priority == 1)
                 return;
-            }
-            
-            ref var proc = ref ProcessQueue.ToArray()[i - 1];
-            proc.Priority--;
-            proc.Quantum = BASE_QUANTUM * proc.Priority;
-            
-            proc = ref ProcessQueue.ToArray()[i];
-            proc.Priority++;
-            proc.Quantum = BASE_QUANTUM * proc.Priority;
+            process.Priority--;
+            process.Quantum = BASE_QUANTUM * process.Priority;
         }
-
-        public static void WaitForInterruption()
-        {
-        }
-
     }
 }

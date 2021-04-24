@@ -7,10 +7,14 @@ namespace os_lab_4
         static void Main(string[] args)
         {
             Scheduler.Initialize();
+            
+            var keyThread = new Thread(Scheduler.MonitorKeys);
+            keyThread.Start();
+            
             while (true)
             {
                 Scheduler.Run();
-                if (Scheduler.ProcessQueue.Count == 0)
+                if (Scheduler.ProcessCount() == 0)
                     return;
             }
         }

@@ -7,23 +7,15 @@ namespace os_lab_4
     public class ProcessInfo
     {
         private const string ModulePath = "C:\\Windows\\system32\\mspaint.exe";
-       
+        
+        private readonly Process _process;
         public int Quantum;
         public int Priority;
-
-        public Process _process;
-        public bool IsReady;
-        public bool IsRunning;
-        public bool IsIdle;
 
         public ProcessInfo()
         {
             _process = new Process{StartInfo = new ProcessStartInfo(ModulePath)};
-            IsReady = true;
-            IsRunning = false;
-            IsIdle = false;
             _process.Start();
-            Suspend();
         }
 
         public bool Exited()
@@ -33,12 +25,16 @@ namespace os_lab_4
 
         [DllImport("kernel32.dll")]
         static extern IntPtr OpenThread(ThreadAccess dwDesiredAccess, bool bInheritHandle, uint dwThreadId);
+        
         [DllImport("kernel32.dll")]
         static extern uint SuspendThread(IntPtr hThread);
+        
         [DllImport("kernel32.dll")]
         static extern int ResumeThread(IntPtr hThread);
+        
         [DllImport("kernel32", CharSet = CharSet.Auto,SetLastError = true)]
         static extern bool CloseHandle(IntPtr handle);
+        
         public void Suspend()
         {
             try
