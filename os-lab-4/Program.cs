@@ -1,6 +1,7 @@
-﻿namespace os_lab_4
+﻿using System.Threading;
+
+namespace os_lab_4
 {
-    // TODO: define when the process is "ready"
     class Program
     {
         static void Main(string[] args)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 
 namespace os_lab_4
@@ -7,10 +8,10 @@ namespace os_lab_4
     // TODO: suspend/resume process, catch interruptions and priority change signals
     public static class Scheduler
     {
-        private const int ProcessNumber = 5;
+        private const int ProcessNumber = 2;
         public static Queue<ProcessInfo> ProcessQueue;
-        private const int BASE_QUANT = 1000;
-        private static ProcessInfo suspendedProcess = null;
+        private const int BASE_QUANTUM = 1000;
+        //private static ProcessInfo suspendedProcess = null;
 
         public static void Initialize()
         {
@@ -22,7 +23,7 @@ namespace os_lab_4
                 {
                     var proc = new ProcessInfo();
                     proc.Priority = i + 1;
-                    proc.Quant = BASE_QUANT * multiplier;
+                    proc.Quantum = BASE_QUANTUM * multiplier;
                     ProcessQueue.Enqueue(proc);
                     multiplier--;
                 }
@@ -36,10 +37,18 @@ namespace os_lab_4
 
         public static void Run()
         {
-            var proc = ProcessQueue.Dequeue();
-            Thread.Sleep(proc.Quant);
-            Console.WriteLine($"process {proc.Priority} ran");
-            ProcessQueue.Enqueue(proc);
+            var process = ProcessQueue.Dequeue();
+            if (process.Exited())
+                return;
+            
+            var sw = new Stopwatch();
+            sw.Start();
+            process.Resume();
+            while (sw.Elapsed.TotalMilliseconds < process.Quantum)
+                WaitForInterruption();
+            sw.Stop();
+            process.Suspend();
+            ProcessQueue.Enqueue(process);
         }
 
         public static void RaisePriority(int i)
@@ -52,11 +61,11 @@ namespace os_lab_4
 
             ref var proc = ref ProcessQueue.ToArray()[i - 1];
             proc.Priority++;
-            proc.Quant = BASE_QUANT * proc.Priority;
+            proc.Quantum = BASE_QUANTUM * proc.Priority;
 
             proc = ref ProcessQueue.ToArray()[i - 2];
             proc.Priority--;
-            proc.Quant = BASE_QUANT * proc.Priority;
+            proc.Quantum = BASE_QUANTUM * proc.Priority;
         }
 
         public static void LowerPriority(int i)
@@ -69,24 +78,16 @@ namespace os_lab_4
             
             ref var proc = ref ProcessQueue.ToArray()[i - 1];
             proc.Priority--;
-            proc.Quant = BASE_QUANT * proc.Priority;
+            proc.Quantum = BASE_QUANTUM * proc.Priority;
             
             proc = ref ProcessQueue.ToArray()[i];
             proc.Priority++;
-            proc.Quant = BASE_QUANT * proc.Priority;
-        }
-
-        // maybe move these functions to ProcessInfo? 
-        public static void SuspendProcess()
-        {
-        }
-
-        public static void ResumeProcess()
-        {
+            proc.Quantum = BASE_QUANTUM * proc.Priority;
         }
 
         public static void WaitForInterruption()
         {
         }
+
     }
 }
