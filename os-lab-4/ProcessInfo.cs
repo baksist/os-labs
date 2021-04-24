@@ -18,10 +18,7 @@ namespace os_lab_4
             _process.Start();
         }
 
-        public bool Exited()
-        {
-            return _process.HasExited;
-        }
+        public bool Exited() => _process.HasExited;
 
         [DllImport("kernel32.dll")]
         static extern IntPtr OpenThread(ThreadAccess dwDesiredAccess, bool bInheritHandle, uint dwThreadId);
