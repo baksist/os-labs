@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 
 namespace os_lab_4
 {
@@ -15,7 +16,10 @@ namespace os_lab_4
             {
                 Scheduler.Run();
                 if (Scheduler.ProcessCount() == 0)
+                {
+                    Console.WriteLine("Process queue is empty, quitting...");
                     return;
+                }
             }
         }
     }

@@ -11,6 +11,7 @@ namespace os_lab_4
         private readonly Process _process;
         public int Quantum;
         public int Priority;
+        public string Name;
 
         public ProcessInfo()
         {

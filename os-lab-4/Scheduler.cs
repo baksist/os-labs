@@ -6,7 +6,7 @@ namespace os_lab_4
 {
     public static class Scheduler
     {
-        private const int ProcessNumber = 5;
+        private const int ProcessNumber = 3;
         private const int BASE_QUANTUM = 1000;
         private const ConsoleKey defaultKey = ConsoleKey.A;
         
@@ -26,8 +26,10 @@ namespace os_lab_4
                     var proc = new ProcessInfo();
                     proc.Priority = i + 1;
                     proc.Quantum = BASE_QUANTUM * multiplier;
+                    proc.Name = $"process #{i + 1}";
                     ProcessQueue.Enqueue(proc);
                     multiplier--;
+                    Console.WriteLine($"Process started: quantum is {proc.Quantum} ms");
                 }
             }
             catch (Exception e)
@@ -46,6 +48,7 @@ namespace os_lab_4
             var sw = new Stopwatch();
             sw.Start();
             process.Resume();
+            Console.WriteLine($"{process.Name} now running");
             while (sw.Elapsed.TotalMilliseconds < process.Quantum) {}
             sw.Stop();
             process.Suspend();
@@ -76,6 +79,7 @@ namespace os_lab_4
         {
             process.Priority++;
             process.Quantum = BASE_QUANTUM * process.Priority;
+            Console.WriteLine($"Priority raised for {process.Name}; new quantum is {process.Quantum} ms");
         }
         
         private static void LowerPriority(ref ProcessInfo process)
@@ -84,6 +88,7 @@ namespace os_lab_4
                 return;
             process.Priority--;
             process.Quantum = BASE_QUANTUM * process.Priority;
+            Console.WriteLine($"Priority lowered for {process.Name}; new quantum is {process.Quantum} ms");
         }
     }
 }
